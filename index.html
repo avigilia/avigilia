@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Vigília</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter para texto geral e Playfair Display para títulos elegantes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        // Configuração de cores personalizadas do Tailwind baseadas no logo
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            navy: '#0A192F',      // Azul marinho escuro do texto/farol
+                            gold: '#D4AF37',      // Dourado do feixe de luz/texto
+                            goldLight: '#F3E5AB', // Dourado claro para fundos
+                            blue: '#112240',      // Azul marinho secundário
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #0A192F 0%, #112240 100%);
+        }
+        
+        .gold-text-gradient {
+            background: linear-gradient(to right, #D4AF37, #F3E5AB, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Efeito de brilho sutil para os cards dos formadores */
+        .formador-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.2);
+            pointer-events: none;
+        }
+
+        /* --- NOVAS ANIMAÇÕES --- */
+        
+        /* 1. Reveal no Scroll (Deslizar para cima e aparecer) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Atrasos em cascata */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
+        /* 2. Efeito de Flutuação (Para o Logo) */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* 3. Efeito de Brilho Pulsante (Para botões) */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(212, 175, 55, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased bg-gray-50 overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="flex items-center gap-3">
+                        <img class="h-12 w-auto rounded-full bg-white p-1" src="logo.jpeg" alt="Logo A Vigília">
+                        <span class="font-serif text-2xl font-bold text-white tracking-wider">A VIGÍLIA</span>
+                    </a>
+                </div>
+                
+                <!-- Menu Desktop -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#sobre" class="text-gray-300 hover:text-brand-gold transition-colors font-medium text-sm uppercase tracking-wide">Sobre o Projeto</a>
+                    <a href="#materias" class="text-gray-300 hover:text-brand-gold transition-colors font-medium text-sm uppercase tracking-wide">Matérias</a>
+                    <a href="#formadores" class="text-gray-300 hover:text-brand-gold transition-colors font-medium text-sm uppercase tracking-wide">A Nossa Equipa</a>
+                    <a href="#inscricao" class="bg-brand-gold text-brand-navy hover:bg-yellow-500 px-6 py-2.5 rounded-full font-bold transition-all shadow-lg hover:shadow-brand-gold/30">Inscreva-se Agora</a>
+                </div>
+
+                <!-- Botão Mobile -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white hover:text-brand-gold focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden bg-brand-navy border-t border-brand-blue/30 absolute w-full shadow-2xl">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#sobre" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-brand-blue">Sobre a Vigília</a>
+                <a href="#materias" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-brand-blue">Matérias</a>
+                <a href="#formadores" class="mobile-link block px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-brand-blue">A Nossa Equipa</a>
+                <a href="#inscricao" class="mobile-link block mt-4 px-3 py-3 text-center rounded-md text-base font-bold text-brand-navy bg-brand-gold hover:bg-yellow-500">Inscreva-se Agora</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient relative min-h-screen flex items-center justify-center pt-20 pb-12 px-4 sm:px-6 lg:px-8">
+        <!-- Elementos decorativos animados -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute -top-1/4 -right-1/4 w-1/2 h-1/2 bg-brand-gold/10 rounded-full blur-3xl animate-pulse"></div>
+            <div class="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-brand-blue/50 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+            
+            <!-- Texto Hero -->
+            <div class="w-full lg:w-1/2 text-center lg:text-left space-y-8">
+                <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-blue/50 border border-brand-gold/30 text-brand-goldLight text-sm font-medium mb-4">
+                    <i class="fas fa-lightbulb text-brand-gold"></i>
+                    <span>Preparação Intensiva</span>
+                </div>
+                
+                <h1 class="reveal delay-100 text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight">
+                    Ilumine o seu <br>
+                    <span class="gold-text-gradient">Futuro Académico</span>
+                </h1>
+                
+                <p class="reveal delay-200 text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 font-light">
+                    "Quem dormir, vai deixar cadeira." Prepare-se com excelência, garanta a sua aprovação e não fique para trás. A Vigília é o seu farol no mar dos estudos.
+                </p>
+                
+                <div class="reveal delay-300 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start pt-4">
+                    <a href="#inscricao" class="w-full sm:w-auto px-8 py-4 bg-brand-gold text-brand-navy font-bold rounded-full text-lg hover:bg-yellow-500 transition-all animate-pulse-glow text-center">
+                        Garantir a Minha Vaga
+                    </a>
+                    <a href="#sobre" class="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-brand-gold text-brand-gold font-bold rounded-full text-lg hover:bg-brand-gold hover:text-brand-navy transition-all text-center">
+                        Saber Mais
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Imagem/Logo Hero animada -->
+            <div class="w-full lg:w-1/2 flex justify-center relative reveal delay-200">
+                <div class="absolute inset-0 bg-brand-gold/20 blur-[100px] rounded-full"></div>
+                <!-- Aplicação da classe animate-float -->
+                <img src="logo.jpeg" alt="Logo A Vigília" class="animate-float relative z-10 w-full max-w-md rounded-3xl shadow-2xl shadow-brand-navy/50 bg-white p-4">
+            </div>
+        </div>
+        
+        <!-- Seta de rolagem -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce reveal delay-300">
+            <a href="#sobre" class="text-brand-gold opacity-70 hover:opacity-100 transition-opacity">
+                <i class="fas fa-chevron-down text-2xl"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Sobre o Projeto & Preços -->
+    <section id="sobre" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4">Sobre A Vigília</h2>
+                <div class="w-24 h-1 bg-brand-gold mx-auto rounded-full"></div>
+                <p class="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
+                    A Vigília oferece aulas intensivas de revisão e preparação para os testes de P1 e P2, com foco nas disciplinas mais desafiantes do 2º e 3º ano.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+                
+                <!-- Estrutura do Curso -->
+                <div class="reveal delay-100 bg-gray-50 rounded-2xl p-8 shadow-sm border border-gray-100">
+                    <h3 class="text-2xl font-bold text-brand-navy mb-6 flex items-center gap-3">
+                        <i class="fas fa-book-open text-brand-gold"></i>
+                        Estrutura do Curso
+                    </h3>
+                    
+                    <ul class="space-y-4 text-gray-700">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-calendar-alt text-brand-gold mt-1"></i>
+                            <div>
+                                <span class="font-semibold text-brand-navy">Início:</span> 
+                                Última semana de Agosto.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-clock text-brand-gold mt-1"></i>
+                            <div>
+                                <span class="font-semibold text-brand-navy">Frequência:</span> 
+                                2 aulas por semana (2 horas cada), num total de 12 aulas por cadeira.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-check-circle text-brand-gold mt-1"></i>
+                            <div>
+                                <span class="font-semibold text-brand-navy">Material Incluído:</span> 
+                                Direito a material de apoio exclusivo para potenciar os seus estudos.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tabela de Preços -->
+                <div class="reveal delay-200 bg-brand-navy rounded-2xl p-8 shadow-xl text-white relative overflow-hidden card-hover">
+                    <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-brand-gold/10"></div>
+                    
+                    <h3 class="text-2xl font-bold text-white mb-2 flex items-center gap-3 relative z-10">
+                        <i class="fas fa-tags text-brand-gold"></i>
+                        Investimento
+                    </h3>
+                    <p class="text-gray-400 mb-6 text-sm">Escolha o seu pacote e poupe.</p>
+                    
+                    <div class="space-y-0 relative z-10">
+                        <div class="flex justify-between items-center py-4 border-b border-brand-blue transition-colors hover:bg-brand-blue/30 px-2 rounded">
+                            <span class="text-lg">1 Cadeira (Base)</span>
+                            <span class="text-xl font-bold text-brand-gold">15.000 Kz</span>
+                        </div>
+                        <div class="flex justify-between items-center py-4 border-b border-brand-blue transition-colors hover:bg-brand-blue/30 px-2 rounded">
+                            <span class="text-lg">2 Cadeiras</span>
+                            <span class="text-xl font-bold text-brand-gold">20.000 Kz</span>
+                        </div>
+                        <div class="flex justify-between items-center py-4 border-b border-brand-blue transition-colors hover:bg-brand-blue/30 px-2 rounded">
+                            <span class="text-lg">3 Cadeiras</span>
+                            <span class="text-xl font-bold text-brand-gold">35.000 Kz</span>
+                        </div>
+                        <div class="flex justify-between items-center py-4 transition-colors hover:bg-brand-blue/30 px-2 rounded">
+                            <span class="text-lg">4 Cadeiras</span>
+                            <span class="text-xl font-bold text-brand-gold">50.000 Kz</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nova Secção de Impacto (Estatísticas) -->
+    <section id="impacto" class="py-16 bg-brand-navy relative overflow-hidden border-y-2 border-brand-gold/30 shadow-inner">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-brand-blue">
+                
+                <!-- Dado 1: Alunos impactados -->
+                <div class="py-4 md:py-0 reveal delay-100">
+                    <div class="text-5xl md:text-6xl font-serif font-bold text-brand-gold mb-2 flex justify-center items-center">
+                        <span class="counter" data-target="50">0</span><span class="text-4xl md:text-5xl ml-1">+</span>
+                    </div>
+                    <p class="text-gray-300 font-medium uppercase tracking-wide text-sm mt-1">Alunos impactados</p>
+                </div>
+
+                <!-- Dado 2: Taxa de aprovação -->
+                <div class="py-4 md:py-0 reveal delay-200">
+                    <div class="text-5xl md:text-6xl font-serif font-bold text-brand-gold mb-2 flex justify-center items-center">
+                        <span class="counter" data-target="98">0</span><span class="text-4xl md:text-5xl ml-1">%</span>
+                    </div>
+                    <p class="text-gray-300 font-medium uppercase tracking-wide text-sm mt-1">Taxa de aprovação</p>
+                </div>
+
+                <!-- Dado 3: Avaliação média -->
+                <div class="py-4 md:py-0 reveal delay-300">
+                    <div class="text-5xl md:text-6xl font-serif font-bold text-brand-gold mb-2 flex justify-center items-center">
+                        <span class="counter" data-target="5">0</span>
+                        <div class="flex ml-3 space-x-1 mt-1">
+                            <i class="fas fa-star text-xl md:text-2xl text-brand-gold"></i>
+                            <i class="fas fa-star text-xl md:text-2xl text-brand-gold"></i>
+                            <i class="fas fa-star text-xl md:text-2xl text-brand-gold"></i>
+                            <i class="fas fa-star text-xl md:text-2xl text-brand-gold"></i>
+                            <i class="fas fa-star text-xl md:text-2xl text-brand-gold"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 font-medium uppercase tracking-wide text-sm mt-1">Avaliação média</p>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Disciplinas -->
+    <section id="materias" class="py-24 bg-gray-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-navy mb-4">Disciplinas Oferecidas</h2>
+                <div class="w-24 h-1 bg-brand-gold mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- 2º Ano -->
+                <div class="reveal delay-100 bg-white rounded-2xl shadow-md p-8 border-t-[8px] border-brand-navy transition-all duration-500 hover:shadow-2xl hover:scale-105 hover:border-brand-gold card-hover">
+                    <div class="text-center mb-6">
+                        <span class="inline-block px-4 py-1 bg-brand-navy text-white font-bold rounded-full text-sm tracking-widest uppercase mb-2">2º Ano</span>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+                            <i class="fas fa-book text-brand-gold/70 mr-3 group-hover:text-brand-gold transition-colors"></i>
+                            <span class="font-medium text-gray-800">Cálculo</span>
+                        </li>
+                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+                            <i class="fas fa-book text-brand-gold/70 mr-3 group-hover:text-brand-gold transition-colors"></i>
+                            <span class="font-medium text-gray-800">Micro I</span>
+                        </li>
+                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+                            <i class="fas fa-book text-brand-gold/70 mr-3 group-hover:text-brand-gold transition-colors"></i>
+                            <span class="font-medium text-gray-800">Geral II</span>
+                        </li>
+                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+                            <i class="fas fa-book text-brand-gold/70 mr-3 group-hover:text-brand-gold transition-colors"></i>
+                            <span class="font-medium text-gray-800">Estatística I</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 3º Ano -->
+                <div class="reveal delay-200 bg-white rounded-2xl shadow-md p-8 border-t-[8px] border-brand-gold transition-all duration-500 hover:shadow-2xl hover:scale-105 hover:border-brand-navy card-hover">
+                    <div class="text-center mb-6">
+                        <span class="inline-block px-4 py-1 bg-brand-gold text-brand-navy font-bold rounded-full text-sm tracking-widest uppercase mb-2">3º Ano</span>
+                    </div>
+                    <ul class="space-y-4">
+                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+                            <i class="fas fa-book text-brand-gold/70 mr-3 group-hover:text-brand-gold transition-colors"></i>
+                            <span class="font-medium text-gray-800">Finanças I</span>
+                        </li>
+                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+                            <i class="fas fa-book text-brand-gold/70 mr-3 group-hover:text-brand-gold transition-colors"></i>
+                            <span class="font-medium text-gray-800">Macro I</span>
+                        </li>
+                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+                            <i class="fas fa-book text-brand-gold/70 mr-3 group-hover:text-brand-gold transition-colors"></i>
+                            <span class="font-medium text-gray-800">EPCO</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Formadores -->
+    <section id="formadores" class="py-24 bg-brand-navy relative overflow-hidden">
+        <!-- Padrão de fundo (Farol sutil) -->
+        <div class="absolute inset-0 opacity-5" style="background-image: url('logo.jpeg'); background-size: 50%; background-position: center; background-repeat: no-repeat;"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-4">A Nossa Equipa</h2>
+                <div class="w-24 h-1 bg-brand-gold mx-auto rounded-full"></div>
+                <p class="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
+                    Facilitadores de excelência prontos para o guiar rumo à aprovação.
+                </p>
+            </div>
+
+            <!-- Grid de Formadores com reveal em cascata -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Edgar -->
+                <div class="reveal delay-100 formador-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover relative group">
+                    <div class="h-96 overflow-hidden relative bg-gray-50 flex justify-center">
+                        <img src="edgar.jpeg" alt="Edgar Gilson" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x600/0A192F/D4AF37?text=Edgar';"
+                             class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-brand-navy mb-1">Edgar Gilson</h3>
+                        <p class="text-brand-gold font-medium text-sm mb-3">Estudante do 4º ano | ISAF</p>
+                        <p class="text-gray-600 text-sm line-clamp-3">Bolseiro de mérito BAI, Contabilista Estratégico.</p>
+                    </div>
+                </div>
+
+                <!-- Francisco -->
+                <div class="reveal delay-200 formador-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover relative group">
+                    <div class="h-96 overflow-hidden relative bg-gray-50 flex justify-center">
+                        <img src="francisco.jpeg" alt="Francisco António" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x600/0A192F/D4AF37?text=Francisco';"
+                             class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-brand-navy mb-1">Francisco António</h3>
+                        <p class="text-brand-gold font-medium text-sm mb-3">Estudante do 4º ano | ISAF</p>
+                        <p class="text-gray-600 text-sm line-clamp-3">Bolseiro de mérito BAI - TaxBrain.</p>
+                    </div>
+                </div>
+
+                <!-- Victor -->
+                <div class="reveal delay-300 formador-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover relative group">
+                    <div class="h-96 overflow-hidden relative bg-gray-50 flex justify-center">
+                        <img src="victor.jpeg" alt="Victor Domingos" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x600/0A192F/D4AF37?text=Victor';"
+                             class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-brand-navy mb-1">Victor Domingos</h3>
+                        <p class="text-brand-gold font-medium text-sm mb-3">Estudante da UNISINOS</p>
+                        <p class="text-gray-600 text-sm line-clamp-3">Bolseiro de mérito Sonangol, Brasil - Entusiasta em Programação e Análises de dados.</p>
+                    </div>
+                </div>
+
+                <!-- Gabriel -->
+                <div class="reveal delay-100 formador-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover relative group">
+                    <div class="h-96 overflow-hidden relative bg-gray-50 flex justify-center">
+                        <img src="gabriel.jpeg" alt="Gabriel Sawalia" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x600/0A192F/D4AF37?text=Gabriel';"
+                             class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-brand-navy mb-1">Gabriel Sawalia</h3>
+                        <p class="text-brand-gold font-medium text-sm mb-3">Estudante do 4º ano | ISAF</p>
+                        <p class="text-gray-600 text-sm line-clamp-3">Bolseiro do INAGBE.</p>
+                    </div>
+                </div>
+
+                <!-- Ednilson -->
+                <div class="reveal delay-200 formador-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover relative group">
+                    <div class="h-96 overflow-hidden relative bg-gray-50 flex justify-center">
+                        <img src="ednilison.jpeg" alt="Ednilson Baptista" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x600/0A192F/D4AF37?text=Ednilson';"
+                             class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-brand-navy mb-1">Ednilson Baptista</h3>
+                        <p class="text-brand-gold font-medium text-sm mb-3">Estudante do 4º ano | ISAF</p>
+                        <p class="text-gray-600 text-sm line-clamp-3">Bolseiro de mérito BAI, AI Enthusiast.</p>
+                    </div>
+                </div>
+
+                <!-- Januario -->
+                <div class="reveal delay-300 formador-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover relative group">
+                    <div class="h-96 overflow-hidden relative bg-gray-50 flex justify-center">
+                        <img src="januario.jpeg" alt="Januário Kulivela" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x600/0A192F/D4AF37?text=Januario';"
+                             class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-brand-navy mb-1">Januário Kulivela</h3>
+                        <p class="text-brand-gold font-medium text-sm mb-3">Estudante do 4º ano | ISAF</p>
+                        <p class="text-gray-600 text-sm line-clamp-3">Bolseiro de mérito BAI.</p>
+                    </div>
+                </div>
+
+                <!-- Desiderio (Centralizado na última linha) -->
+                <div class="reveal delay-200 formador-card bg-white rounded-2xl overflow-hidden shadow-lg card-hover relative group sm:col-span-2 lg:col-span-3 max-w-sm mx-auto w-full">
+                    <div class="h-96 overflow-hidden relative bg-gray-50 flex justify-center">
+                        <img src="desiderio.jpeg" alt="Desiderio Pereira" 
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x600/0A192F/D4AF37?text=Desiderio';"
+                             class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-brand-navy mb-1">Desiderio Pereira</h3>
+                        <p class="text-brand-gold font-medium text-sm mb-3">Estudante do 4º ano | ISAF</p>
+                        <p class="text-gray-600 text-sm line-clamp-3">Bolseiro de mérito BAI, IFRS Entusiasta.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Inscrição -->
+    <section id="inscricao" class="py-20 bg-brand-gold relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10 reveal">
+            <h2 class="text-3xl md:text-5xl font-serif font-bold text-brand-navy mb-6">Não deixe para a última hora!</h2>
+            <p class="text-xl text-brand-navy/80 mb-10 font-medium">As vagas são limitadas. Garanta o seu lugar na Vigília e prepare-se com os melhores.</p>
+            
+            <button onclick="document.getElementById('modal-inscricao').classList.remove('hidden')" class="bg-brand-navy text-white px-10 py-5 rounded-full text-xl font-bold hover:bg-gray-900 transition-all shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 mx-auto animate-pulse-glow">
+                Fazer Pré-Inscrição Agora
+                <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 border-t-4 border-brand-gold">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <img src="logo.jpeg" alt="Logo" class="h-10 w-10 rounded-full bg-white p-0.5">
+                <span class="font-serif font-bold text-xl tracking-wider">A VIGÍLIA</span>
+            </div>
+            
+            <div class="text-center md:text-left">
+                <p class="text-gray-400 text-sm mb-1">
+                    &copy; 2026 A Vigília. Todos os direitos reservados.
+                </p>
+                <p class="text-brand-gold/90 text-sm font-serif italic">
+                    "Quem dormir, vai deixar cadeira."
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Simples -->
+    <div id="modal-inscricao" class="hidden fixed inset-0 z-[100] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-brand-navy/80 transition-opacity backdrop-blur-sm" aria-hidden="true" onclick="document.getElementById('modal-inscricao').classList.add('hidden')"></div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border-t-8 border-brand-gold">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-envelope text-brand-gold"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-2xl leading-6 font-serif font-bold text-brand-navy mb-4" id="modal-title">
+                                Contacte a Coordenação
+                            </h3>
+                            <div class="mt-2 space-y-4">
+                                <p class="text-sm text-gray-500">
+                                    Para formalizar a sua inscrição, por favor, entre em contacto via WhatsApp com um dos nossos coordenadores para verificar a disponibilidade de vagas e formas de pagamento.
+                                </p>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3">
+                                    <p class="font-bold text-brand-navy mb-2"><i class="fab fa-whatsapp text-green-500 mr-2"></i> WhatsApp para contacto:</p>
+                                    
+                                    <!-- Coordenador 1 -->
+                                    <a href="https://wa.me/244924462591?text=Olá! Gostaria de saber mais sobre as pré-inscrições para o projeto A Vigília." target="_blank" class="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-brand-gold hover:shadow-md transition-all group">
+                                        <span class="text-lg font-mono text-gray-800">+244 924 462 591</span>
+                                        <span class="text-brand-navy group-hover:text-brand-gold text-sm font-medium flex items-center gap-2">
+                                            Enviar Mensagem <i class="fas fa-external-link-alt text-xs"></i>
+                                        </span>
+                                    </a>
+                                    
+                                    <!-- Coordenador 2 -->
+                                    <a href="https://wa.me/244928288519?text=Olá! Gostaria de saber mais sobre as pré-inscrições para o projeto A Vigília." target="_blank" class="flex items-center justify-between p-3 bg-white rounded border border-gray-200 hover:border-brand-gold hover:shadow-md transition-all group">
+                                        <span class="text-lg font-mono text-gray-800">+244 928 288 519</span>
+                                        <span class="text-brand-navy group-hover:text-brand-gold text-sm font-medium flex items-center gap-2">
+                                            Enviar Mensagem <i class="fas fa-external-link-alt text-xs"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-navy text-base font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-navy sm:ml-3 sm:w-auto sm:text-sm" onclick="document.getElementById('modal-inscricao').classList.add('hidden')">
+                        Compreendido, fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lógica para o Menu Mobile
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // Efeito na Navbar ao rolar a página
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                navbar.classList.add('bg-brand-navy', 'shadow-lg');
+                navbar.classList.remove('bg-transparent');
+            } else {
+                navbar.classList.remove('bg-brand-navy', 'shadow-lg');
+                navbar.classList.add('bg-transparent');
+            }
+        });
+        window.dispatchEvent(new Event('scroll'));
+
+        // --- Lógica do Intersection Observer para Animações de Scroll ---
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15 // Dispara quando 15% do elemento estiver visível
+        };
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Anima apenas uma vez
+                }
+            });
+        }, observerOptions);
+
+        // Observar todos os elementos com a classe .reveal
+        document.querySelectorAll('.reveal').forEach((element) => {
+            revealObserver.observe(element);
+        });
+
+        // --- Lógica para o Contador Animado (Estatísticas) ---
+        const counters = document.querySelectorAll('.counter');
+        
+        const counterObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = +counter.getAttribute('data-target');
+                    const duration = 3500; // Duração aumentada para 3500ms (3.5 segundos) para ser mais moderada
+                    const increment = target / (duration / 16); // assumindo ~60 frames por segundo
+                    
+                    let currentCount = 0;
+                    
+                    const updateCounter = () => {
+                        currentCount += increment;
+                        if (currentCount < target) {
+                            counter.innerText = Math.ceil(currentCount);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.innerText = target;
+                        }
+                    };
+                    
+                    updateCounter();
+                    observer.unobserve(counter); // Faz a animação apenas uma vez ao fazer scroll
+                }
+            });
+        }, observerOptions);
+
+        counters.forEach(counter => {
+            counterObserver.observe(counter);
+        });
+    </script>
+</body>
+</html>
