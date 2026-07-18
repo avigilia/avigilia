@@ -194,16 +194,17 @@
                 </div>
             </div>
             
-            <!-- Imagem/Logo Hero animada -->
+            <!-- Vídeo no lugar do Logo Hero (Sem borda branca) -->
             <div class="w-full lg:w-1/2 flex justify-center relative reveal delay-200">
                 <div class="absolute inset-0 bg-brand-gold/20 blur-[100px] rounded-full"></div>
-                <!-- Aplicação da classe animate-float -->
-                <img src="logo.jpeg" alt="Logo A Vigília" class="animate-float relative z-10 w-full max-w-md rounded-3xl shadow-2xl shadow-brand-navy/50 bg-white p-4">
+                <div class="relative z-10 w-full max-w-md aspect-video rounded-3xl shadow-2xl shadow-brand-navy/50 overflow-hidden animate-float">
+                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/1S69xp5G9lk?si=gr23gWR9hDbjY8Dg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
             </div>
         </div>
         
-        <!-- Seta de rolagem -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce reveal delay-300">
+        <!-- Seta de rolagem ajustada -->
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce reveal delay-300">
             <a href="#sobre" class="text-brand-gold opacity-70 hover:opacity-100 transition-opacity">
                 <i class="fas fa-chevron-down text-2xl"></i>
             </a>
