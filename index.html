@@ -184,6 +184,33 @@
                     "Quem dormir, vai deixar cadeira." Prepare-se com excelência, garanta a sua aprovação e não fique para trás. A Vigília é o seu farol no mar dos estudos.
                 </p>
                 
+                <div class="reveal delay-300 mt-8 mb-2" id="countdown-container">
+                    <p class="text-brand-goldLight text-sm uppercase tracking-widest font-semibold mb-3 flex items-center justify-center lg:justify-start gap-2">
+                        <i class="fas fa-hourglass-half text-brand-gold animate-pulse"></i> As aulas começam em:
+                    </p>
+                    <div class="flex items-center justify-center lg:justify-start gap-2 sm:gap-3">
+                        <div class="flex flex-col items-center justify-center bg-brand-blue/60 border border-brand-gold/30 rounded-xl p-2 w-16 sm:w-20 backdrop-blur-sm shadow-lg">
+                            <span id="cd-days" class="text-2xl sm:text-3xl font-serif font-bold text-white">00</span>
+                            <span class="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wide mt-1">Dias</span>
+                        </div>
+                        <div class="text-brand-gold font-bold text-xl sm:text-2xl animate-pulse">:</div>
+                        <div class="flex flex-col items-center justify-center bg-brand-blue/60 border border-brand-gold/30 rounded-xl p-2 w-16 sm:w-20 backdrop-blur-sm shadow-lg">
+                            <span id="cd-hours" class="text-2xl sm:text-3xl font-serif font-bold text-white">00</span>
+                            <span class="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wide mt-1">Horas</span>
+                        </div>
+                        <div class="text-brand-gold font-bold text-xl sm:text-2xl animate-pulse">:</div>
+                        <div class="flex flex-col items-center justify-center bg-brand-blue/60 border border-brand-gold/30 rounded-xl p-2 w-16 sm:w-20 backdrop-blur-sm shadow-lg">
+                            <span id="cd-minutes" class="text-2xl sm:text-3xl font-serif font-bold text-white">00</span>
+                            <span class="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wide mt-1">Min</span>
+                        </div>
+                        <div class="text-brand-gold font-bold text-xl sm:text-2xl animate-pulse">:</div>
+                        <div class="flex flex-col items-center justify-center bg-brand-blue/60 border border-brand-gold/30 rounded-xl p-2 w-16 sm:w-20 backdrop-blur-sm shadow-lg">
+                            <span id="cd-seconds" class="text-2xl sm:text-3xl font-serif font-bold text-brand-gold">00</span>
+                            <span class="text-[10px] sm:text-xs text-gray-400 uppercase tracking-wide mt-1">Seg</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="reveal delay-300 flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start pt-4">
                     <a href="#inscricao" class="w-full sm:w-auto px-8 py-4 bg-brand-gold text-brand-navy font-bold rounded-full text-lg hover:bg-yellow-500 transition-all animate-pulse-glow text-center">
                         Garantir a Minha Vaga
@@ -684,6 +711,37 @@
         counters.forEach(counter => {
             counterObserver.observe(counter);
         });
+
+        // Data alvo: 24 de Agosto de 2026, 14:00h no fuso horário de Angola (GMT+1)
+        const countDownDate = new Date("Aug 24, 2026 14:00:00 GMT+0100").getTime();
+
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+
+            // Cálculos matemáticos para dias, horas, minutos e segundos
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Se o tempo expirou
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown-container").innerHTML = `
+                    <div class="p-4 bg-brand-blue/50 border border-brand-gold/50 rounded-xl inline-block backdrop-blur-sm">
+                        <p class='text-brand-gold text-xl font-bold font-serif'><i class="fas fa-check-circle mr-2"></i>As aulas já começaram!</p>
+                    </div>`;
+                return;
+            }
+
+            // Exibir no HTML (adicionando o zero à esquerda quando for menor que 10)
+            document.getElementById("cd-days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("cd-hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("cd-minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("cd-seconds").innerText = seconds.toString().padStart(2, '0');
+        }, 1000);
+
     </script>
 </body>
 </html>
